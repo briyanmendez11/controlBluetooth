@@ -11,7 +11,7 @@ object LeccionesRepository {
             id = 1,
             titulo = "Lección 1: El semáforo",
             textoCorto = "Rojo significa ALTO. Amarillo significa CUIDADO. Verde significa AVANZA.",
-            textoAudio = "El semáforo nos ayuda a conducir con seguridad. Cuando está en rojo debemos detenernos. Cuando está en amarillo debemos tener cuidado. Cuando está en verde podemos avanzar.",
+            textoAudio = "El semáforo nos ayuda a conducir con seguridad. Cuando está en rojo debemos detenernos. Cuando está en amarillo debemos tener cuidado porque va a cambiar. Cuando está en verde podemos avanzar.",
             pregunta = "¿Qué debes hacer si el semáforo está en rojo?",
             opciones = listOf("Avanzar rápido", "Detenerme", "Girar sin mirar"),
             respuestaCorrecta = "Detenerme",
@@ -49,13 +49,17 @@ object LeccionesRepository {
         ),
         Leccion(
             id = 5,
-            titulo = "Lección 5: Zona de peligro",
-            textoCorto = "Si hay peligro u obstáculos, debemos tener cuidado, detenernos o usar intermitentes.",
-            textoAudio = "Cuando hay una zona de peligro, como conos, obras u obstáculos, debemos reducir la velocidad, detenernos si es necesario y usar las luces intermitentes.",
-            pregunta = "¿Qué debes hacer en una zona de peligro?",
-            opciones = listOf("Acelerar", "Tener cuidado", "Chocar los conos"),
-            respuestaCorrecta = "Tener cuidado",
-            instruccionPractica = "Conduce el carrito con cuidado evitando obstáculos en tu camino."
+            titulo = "Lección 5: Cuidado con los peligros",
+            textoCorto = "Si ves conos, una obra o algo en el camino, debes ir despacio, mirar bien y detenerte si es necesario.",
+            textoAudio = "Cuando vemos conos, una obra o un obstáculo en el camino, debemos tener mucho cuidado. No debemos acelerar ni pasar sin mirar. Debemos bajar la velocidad, respetar las señales y detenernos si hay peligro.",
+            pregunta = "¿Qué debes hacer si ves conos u obstáculos en el camino?",
+            opciones = listOf(
+                "Ir despacio y tener cuidado",
+                "Acelerar para pasar rápido",
+                "Chocar los conos"
+            ),
+            respuestaCorrecta = "Ir despacio y tener cuidado",
+            instruccionPractica = "Conduce despacio y evita los conos u obstáculos de la pista."
         )
     )
 }
