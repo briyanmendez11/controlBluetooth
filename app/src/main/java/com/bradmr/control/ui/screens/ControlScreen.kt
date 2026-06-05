@@ -20,7 +20,7 @@ import com.bradmr.control.viewmodel.MainViewModel
 
 /**
  * Pantalla de control remoto optimizada para manejo con dos manos y control de luces.
- * Los botones de luces ahora están garantizados en la parte superior de cada mando.
+ * Todos los botones de movimiento (incluyendo giros) envían 'S' al soltarse para mayor precisión.
  */
 @Composable
 fun ControlScreen(
@@ -84,8 +84,8 @@ fun ControlScreen(
                 text = "Finalizar",
                 onClick = { viewModel.finalizarPractica() },
                 enabled = !practicaFinalizada,
-                //containerColor = MaterialTheme.colorScheme.secondary,
-                //modifier = Modifier.height(45.dp)
+                containerColor = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier.height(45.dp)
             )
         }
 
@@ -95,7 +95,7 @@ fun ControlScreen(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // COLUMNA IZQUIERDA: Luces de giro e Intermitentes
+                // COLUMNA IZQUIERDA: Luces de giro e Intermitentes y Avance/Retroceso
                 Column(
                     modifier = Modifier.weight(1f).fillMaxHeight(),
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -158,7 +158,7 @@ fun ControlScreen(
                     )
                 }
 
-                // COLUMNA DERECHA: Parqueo y Dirección
+                // COLUMNA DERECHA: Parqueo y Dirección (Ahora también Hold-To-Move para precisión)
                 Column(
                     modifier = Modifier.weight(1f).fillMaxHeight(),
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -176,21 +176,23 @@ fun ControlScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // DIRECCIÓN IZQUIERDA/DERECHA
+                    // DIRECCIÓN IZQUIERDA/DERECHA (HOLD-TO-MOVE)
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally)
                     ) {
-                        DirectionButton(
+                        HoldToMoveButton(
                             icon = Icons.Default.KeyboardArrowLeft,
-                            onClick = { viewModel.sendCommand("L") },
-                            enabled = isConnected,
+                            onPress = { viewModel.sendCommand("L") },
+                            onRelease = { viewModel.sendCommand("S") },
+                            enabled = isConnected && !practicaFinalizada,
                             color = MaterialTheme.colorScheme.tertiary
                         )
-                        DirectionButton(
+                        HoldToMoveButton(
                             icon = Icons.Default.KeyboardArrowRight,
-                            onClick = { viewModel.sendCommand("R") },
-                            enabled = isConnected,
+                            onPress = { viewModel.sendCommand("R") },
+                            onRelease = { viewModel.sendCommand("S") },
+                            enabled = isConnected && !practicaFinalizada,
                             color = MaterialTheme.colorScheme.tertiary
                         )
                     }
