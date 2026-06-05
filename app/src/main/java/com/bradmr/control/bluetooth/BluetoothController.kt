@@ -39,17 +39,11 @@ class BluetoothController(private val context: Context) {
         data class Error(val message: String) : ConnectionState()
     }
 
-    /**
-     * Obtiene la lista de dispositivos ya emparejados.
-     */
     @SuppressLint("MissingPermission")
     fun getPairedDevices(): List<BluetoothDevice> {
         return bluetoothAdapter?.bondedDevices?.toList() ?: emptyList()
     }
 
-    /**
-     * Intenta conectar al dispositivo Bluetooth seleccionado.
-     */
     @SuppressLint("MissingPermission")
     suspend fun connectToDevice(device: BluetoothDevice) {
         _connectionState.value = ConnectionState.Connecting
@@ -70,22 +64,26 @@ class BluetoothController(private val context: Context) {
 
     /**
      * Envía un comando de texto al Arduino.
+     * Mejorado para forzar el envío inmediato de bytes ASCII.
      */
     fun sendCommand(command: String) {
-        if (_connectionState.value is ConnectionState.Connected) {
+        val socket = bluetoothSocket
+        val out = outputStream
+        if (socket != null && socket.isConnected && out != null) {
             try {
-                outputStream?.write(command.toByteArray())
-                Log.d("BluetoothController", "Comando enviado: $command")
+                // Convertimos a ASCII (1 byte por carácter) para el Arduino
+                val data = command.toByteArray(Charsets.US_ASCII)
+                out.write(data)
+                out.flush() // Forzar salida inmediata
+                Log.d("BT_CMD", "Enviado a Arduino: $command")
             } catch (e: IOException) {
-                Log.e("BluetoothController", "Error al enviar comando", e)
-                _connectionState.value = ConnectionState.Error("Error al enviar datos")
+                Log.e("BT_CMD", "Error al enviar comando: $command", e)
             }
+        } else {
+            Log.w("BT_CMD", "No se envió '$command' porque el socket no está listo")
         }
     }
 
-    /**
-     * Cierra la conexión Bluetooth y libera recursos.
-     */
     fun closeConnection() {
         try {
             outputStream?.close()

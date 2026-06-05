@@ -188,7 +188,7 @@ fun BluetoothScreen(viewModel: MainViewModel, onContinue: () -> Unit) {
             BigButton(
                 text = "¡Aprender y Jugar!",
                 onClick = onContinue,
-                enabled = connectionState is BluetoothController.ConnectionState.Connected,
+                enabled = true, //connectionState is BluetoothController.ConnectionState.Connected,
                 containerColor = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier.fillMaxWidth()
             )
