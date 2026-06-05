@@ -14,6 +14,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 /**
+ * Enumeración para los modos de luces del carrito.
+ */
+enum class LightMode {
+    NONE, LEFT, RIGHT, PARKING
+}
+
+/**
  * ViewModel principal que gestiona el estado de la aplicación, la lógica de las lecciones
  * y las interacciones con Bluetooth y TTS.
  */
@@ -45,6 +52,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _practicaFinalizada = mutableStateOf(false)
     val practicaFinalizada: State<Boolean> = _practicaFinalizada
 
+    // --- Estado de Luces ---
+    private val _lightMode = mutableStateOf(LightMode.NONE)
+    val lightMode: State<LightMode> = _lightMode
+
     // --- Funciones Bluetooth ---
 
     fun getPairedDevices(): List<BluetoothDevice> = bluetoothController.getPairedDevices()
@@ -57,6 +68,26 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun sendCommand(command: String) {
         bluetoothController.sendCommand(command)
+    }
+
+    // --- Lógica de Luces ---
+    
+    fun toggleLight(mode: LightMode) {
+        if (_lightMode.value == mode) {
+            // Si ya está activo, apagar
+            _lightMode.value = LightMode.NONE
+            sendCommand("M")
+        } else {
+            // Activar nuevo modo
+            _lightMode.value = mode
+            val command = when (mode) {
+                LightMode.LEFT -> "1"
+                LightMode.RIGHT -> "2"
+                LightMode.PARKING -> "3"
+                else -> "M"
+            }
+            sendCommand(command)
+        }
     }
 
     // --- Funciones TTS ---
@@ -83,6 +114,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun finalizarPractica() {
         _practicaFinalizada.value = true
         sendCommand("S") // Detener el carrito al finalizar
+        sendCommand("M") // Apagar luces al finalizar
+        _lightMode.value = LightMode.NONE
     }
 
     fun siguienteLeccion() {
@@ -98,6 +131,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         _respuestaCorrectaDada.value = false
         _mensajeRespuesta.value = ""
         _practicaFinalizada.value = false
+        _lightMode.value = LightMode.NONE
         detenerVoz()
     }
 

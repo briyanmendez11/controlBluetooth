@@ -1,5 +1,6 @@
 package com.bradmr.control.ui.components
 
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -8,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -77,6 +79,84 @@ fun BigButton(
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         )
+    }
+}
+
+/**
+ * Botón que envía un comando al presionarse y "S" al soltarse.
+ */
+@Composable
+fun HoldToMoveButton(
+    icon: ImageVector,
+    onPress: () -> Unit,
+    onRelease: () -> Unit,
+    enabled: Boolean,
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colorScheme.primary
+) {
+    FilledIconButton(
+        onClick = { }, // No se usa el click estándar
+        enabled = enabled,
+        modifier = modifier
+            .size(100.dp, 80.dp)
+            .padding(4.dp)
+            .pointerInput(enabled) {
+                if (enabled) {
+                    detectTapGestures(
+                        onPress = {
+                            onPress()
+                            tryAwaitRelease()
+                            onRelease()
+                        }
+                    )
+                }
+            },
+        shape = RoundedCornerShape(20.dp),
+        colors = IconButtonDefaults.filledIconButtonColors(
+            containerColor = color,
+            contentColor = Color.White
+        )
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            modifier = Modifier.size(48.dp)
+        )
+    }
+}
+
+/**
+ * Botón para alternar estados de luces.
+ */
+@Composable
+fun LightToggleButton(
+    icon: ImageVector,
+    text: String,
+    isActive: Boolean,
+    onClick: () -> Unit,
+    enabled: Boolean,
+    modifier: Modifier = Modifier,
+    defaultColor: Color = MaterialTheme.colorScheme.surfaceVariant,
+    activeColor: Color = Color(0xFFFBC02D) // Amarillo cálido
+) {
+    Button(
+        onClick = onClick,
+        enabled = enabled,
+        modifier = modifier
+            .height(60.dp)
+            .padding(4.dp),
+        shape = RoundedCornerShape(12.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = if (isActive) activeColor else defaultColor,
+            contentColor = if (isActive) Color.Black else MaterialTheme.colorScheme.onSurfaceVariant
+        ),
+        elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Icon(icon, contentDescription = null, modifier = Modifier.size(24.dp))
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(text, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+        }
     }
 }
 

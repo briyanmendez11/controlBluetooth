@@ -147,7 +147,7 @@ fun LeccionScreen(
             BigButton(
                 text = "¡A conducir el carrito!",
                 onClick = onNavigateToControl,
-                enabled =respuestaCorrectaDada,
+                enabled = respuestaCorrectaDada,
                 containerColor = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier.fillMaxWidth()
             )
